@@ -1,5 +1,6 @@
-# Algorithm-Data_Structure_in_C
+# Library_in_C
 「Cによるアルゴリズムとデータ構造」  
 http://shop.ohmsha.co.jp/shopdetail/000000003920/  
 に載っているアルゴリズムを C で実装する．  
-また，これらのアルゴリズムを実装した C++ と Java のライブラリを使う際のメモを保管．
+  
+田中研で提案されたアルゴリズムをカーネルモジュールとして実装するためのC言語ライブラリ．
