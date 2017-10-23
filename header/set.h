@@ -46,5 +46,7 @@ void set_delete_unsigned_pair_sub(set_unsigned_pair*, pair_unsigned_node*);
 void set_delete_fixup_unsigned_pair(set_unsigned_pair*, pair_unsigned_node*);
 
 void set_show_unsigned_pair(pair_unsigned_node*, unsigned);
-  
+void set_unsigned_pair_clear(set_unsigned_pair*);
+void set_unsigned_pair_clear_sub(pair_unsigned_node*);
+
 #endif

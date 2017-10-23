@@ -48,7 +48,6 @@ void right_lotate_unsigned_pair(set_unsigned_pair* T, pair_unsigned_node* y) {
 
 void set_insert_unsigned_pair(set_unsigned_pair* T, pair_unsigned v) {
   if (NULL != tree_search_unsigned_pair(T->root,v)) { return; }
-  printf("1: %d %d\n", v.first, v.second);
   pair_unsigned_node* z = (pair_unsigned_node*)malloc(sizeof(pair_unsigned_node));
   z->key.first = v.first;
   z->key.second = v.second;
@@ -72,14 +71,12 @@ void set_insert_unsigned_pair_sub(set_unsigned_pair* T, pair_unsigned_node* z) {
   z->right = T->nil;
   z->color = red;
   set_instert_fixup_unsigned_pair(T, z);
-  printf("2: %d %d\n\n", z->key.first, z->key.second);
 }
 
 void set_instert_fixup_unsigned_pair(set_unsigned_pair* T, pair_unsigned_node* z) {
   pair_unsigned_node* y;
   
   while (z->p != T->nil && red == z->p->color) {
-    printf("hoge\n");
     if (z->p == z->p->p->left) {
       y = z->p->p->right;
       if (T->nil != y && red == y->color) { /* case 1 */
@@ -228,4 +225,16 @@ void set_show_unsigned_pair(pair_unsigned_node* p, unsigned i) {
   set_show_unsigned_pair(p->left, i+1);
   set_show_unsigned_pair(p->right, i+1);
   printf("%d: (%d, %d) -- %d\n", i, p->key.first, p->key.second, p->color);
+}
+
+void set_unsigned_pair_clear(set_unsigned_pair* T) {
+  pair_unsigned_node* p = T->root;
+  set_unsigned_pair_clear_sub(p);
+}
+
+void set_unsigned_pair_clear_sub(pair_unsigned_node* p) {
+  if (NULL == p) { return; }
+  set_unsigned_pair_clear_sub(p->left);
+  set_unsigned_pair_clear_sub(p->right);
+  free(p);
 }
