@@ -51,6 +51,7 @@ void pair_unsigned_list_delete(pair_unsigned_list*, pair_unsigned);
 void pair_unsigned_list_delete_sub(pair_unsigned_list*, pair_unsigned_cell*);
 pair_unsigned_list* pair_unsigned_lists_concat(pair_unsigned_list*, pair_unsigned_list*);
 void pair_unsigned_list_clear(pair_unsigned_list*);
+pair_unsigned_list* pair_unsigned_list_copy(pair_unsigned_list*);
 void show_pair_unsigned_list(pair_unsigned_list*);
 
 #endif

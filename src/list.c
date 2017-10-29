@@ -53,6 +53,20 @@ void string_list_clear(string_list* L) {
   free(L);
 }
 
+pair_unsigned_list* pair_unsigned_list_copy(pair_unsigned_list* L) {
+  if (NULL == L) { return NULL; }
+  
+  pair_unsigned_list* C = (pair_unsigned_list*)calloc(1, sizeof(pair_unsigned_list));
+  pair_unsigned_cell* l;
+  pair_unsigned p;
+  for (l = L->head; NULL != l; l = l->next) {
+    p.first = l->key.first, p.second = l->key.second;
+    pair_unsigned_list_insert(C, p);
+  }
+  
+  return C;
+}
+
 void show_string_list(string_list* L) {
   string_cell* p;
   for (p = L->head; NULL != p; p = p->next) { printf("%s\n", p->key); }
