@@ -1,6 +1,6 @@
 #include <list.h>
 
-/* return a pointer of the first element with key s*/
+/********** for string ***********/
 string_cell* string_list_search(string_list* L, char* s) {
   string_cell* x = L->head;
   while (NULL != x && 0 != strcmp(x->key, s)) { x = x->next; }
@@ -50,7 +50,61 @@ void string_list_clear(string_list* L) {
     p = p->next;
     free(q);
   }
-  free(L);
+}
+
+void show_string_list(string_list* L) {
+  string_cell* p;
+  for (p = L->head; NULL != p; p = p->next) { printf("%s\n", p->key); }
+}
+
+
+/********** for pair of unsigned ***********/
+pair_unsigned_cell* pair_unsigned_list_search(pair_unsigned_list* L, pair_unsigned pu) {
+  pair_unsigned_cell* x = L->head;
+  while (NULL != x && eq_pair_unsigned(x->key, pu)) { x = x->next; }
+  return x;
+}
+
+void pair_unsigned_list_insert(pair_unsigned_list* L, pair_unsigned pu) {
+  pair_unsigned_cell* new = (pair_unsigned_cell*)malloc(sizeof(pair_unsigned_cell));
+  new->key = pu;
+  pair_unsigned_list_insert_sub(L,new);
+}
+
+void pair_unsigned_list_insert_sub(pair_unsigned_list* L, pair_unsigned_cell* x) {
+  x->next = L->head;
+  if (NULL != L->head) { L->head->prev = x; }
+  else { L->last = x; }
+  L->head = x;
+  x->prev = NULL;
+}
+
+void pair_unsigned_list_delete(pair_unsigned_list* L, pair_unsigned pu) {
+  pair_unsigned_cell* x = pair_unsigned_list_search(L, pu);
+  if (NULL != x) { pair_unsigned_list_delete_sub(L, x); }
+}
+
+void pair_unsigned_list_delete_sub(pair_unsigned_list* L, pair_unsigned_cell* x) {
+  if (NULL != x->prev) { x->prev->next = x->next; }
+  else { L->head = x->next; }
+  if (NULL != x->next) { x->next->prev = x->prev; }
+  else { L->last = x->prev; }
+}
+
+pair_unsigned_list* pair_unsigned_lists_concat(pair_unsigned_list* L1, pair_unsigned_list* L2) {
+  if (NULL == L1) { return L2; }
+  L1->last->next = L2->head;
+  if (NULL != L2) { L2->head->prev = L1->last; }
+  return L1;
+}
+
+void pair_unsigned_list_clear(pair_unsigned_list* L) {
+  pair_unsigned_cell* p, *q;
+  for (p = L->head; NULL != p; ) {
+    q = p;
+    p = p->next;
+    free(q);
+  }
 }
 
 pair_unsigned_list* pair_unsigned_list_copy(pair_unsigned_list* L) {
@@ -67,7 +121,7 @@ pair_unsigned_list* pair_unsigned_list_copy(pair_unsigned_list* L) {
   return C;
 }
 
-void show_string_list(string_list* L) {
-  string_cell* p;
-  for (p = L->head; NULL != p; p = p->next) { printf("%s\n", p->key); }
+void show_pair_unsigned_list(pair_unsigned_list* L) {
+  pair_unsigned_cell* p;
+  for (p = L->head; NULL != p; p = p->next) { printf("(%d, %d)\n", p->key.first, p->key.second); }
 }

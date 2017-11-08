@@ -7,7 +7,10 @@
 #ifndef __TANAKALAB_LIST_H__
 #define __TANAKALAB_LIST_H__
 
-/********** pair of string **********/
+#ifndef __TANAKALAB_PAIR_H__
+#include <pair.h>
+#endif
+
 struct STRING_CELL {
   char* key;
   struct STRING_CELL* prev;
@@ -30,7 +33,6 @@ string_list* string_lists_concat(string_list*, string_list*);
 void string_list_clear(string_list*);
 void show_string_list(string_list*);
 
-/********** pair of unsigned **********/
 struct PAIR_UNSIGNED_CELL {
   pair_unsigned key;
   struct PAIR_UNSIGNED_CELL* prev;
@@ -52,6 +54,7 @@ void pair_unsigned_list_delete_sub(pair_unsigned_list*, pair_unsigned_cell*);
 pair_unsigned_list* pair_unsigned_lists_concat(pair_unsigned_list*, pair_unsigned_list*);
 void pair_unsigned_list_clear(pair_unsigned_list*);
 pair_unsigned_list* pair_unsigned_list_copy(pair_unsigned_list*);
+					    
 void show_pair_unsigned_list(pair_unsigned_list*);
 
 #endif
