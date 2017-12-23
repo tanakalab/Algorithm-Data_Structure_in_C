@@ -7,6 +7,10 @@
 #ifndef __TANAKALAB_LIST_H__
 #define __TANAKALAB_LIST_H__
 
+#ifndef __TANAKALAB_CONST_H__
+#include <const.h>
+#endif
+
 #ifndef __TANAKALAB_PAIR_H__
 #include <pair.h>
 #endif
