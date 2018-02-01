@@ -3,8 +3,12 @@
 #ifndef __TANAKALAB_LIST_H__
 #define __TANAKALAB_LIST_H__
 
-#ifndef __TANAKALAB_CONST_H__
-#include "const.h"
+#ifndef __TANAKALAB_BOOL_H__
+#include "bool.h"
+#endif
+
+#ifndef __TANAKALAB_PAIR_H__
+#include "pair.h"
 #endif
 
 #include <stdio.h>
@@ -37,45 +41,8 @@ void list_unsigned_delete(list_unsigned*, unsigned);
 void list_unsigned_delete_sub(list_unsigned*, list_unsigned_cell*);
 list_unsigned* list_unsigneds_concat(list_unsigned*, list_unsigned*);
 void list_unsigned_clear(list_unsigned*);
-void show_list_unsigned(list_unsigned*);
+void list_unsigned_print(list_unsigned*);
 
-
-/************************* list pair unsigned *************************/
-struct PAIR_UNSIGNED {
-  unsigned first;
-  unsigned second;
-};
-typedef struct PAIR_UNSIGNED pair_unsigned;
-
-struct LIST_PAIR_UNSIGNED_CELL {
-  unsigned first;
-  unsigned second;
-  struct LIST_PAIR_UNSIGNED_CELL* prev;
-  struct LIST_PAIR_UNSIGNED_CELL* next;
-};
-typedef struct LIST_PAIR_UNSIGNED_CELL list_pair_unsigned_cell;
-
-struct LIST_PAIR_UNSIGNED {
-  list_pair_unsigned_cell* head;
-  list_pair_unsigned_cell* last;
-  unsigned size;
-};
-typedef struct LIST_PAIR_UNSIGNED list_pair_unsigned;
-
-void list_pair_unsigned_remove_head(list_pair_unsigned*);
-pair_unsigned list_pair_unsigned_head(list_pair_unsigned*);
-bool list_pair_unsigned_is_empty(list_pair_unsigned* L);
-list_pair_unsigned_cell* list_pair_unsigned_search(list_pair_unsigned*, unsigned, unsigned);
-void list_pair_unsigned_insert(list_pair_unsigned*, unsigned, unsigned);
-void list_pair_unsigned_insert_sub(list_pair_unsigned*, list_pair_unsigned_cell*);
-void list_pair_unsigned_delete(list_pair_unsigned*, unsigned, unsigned);
-void list_pair_unsigned_delete_sub(list_pair_unsigned*, list_pair_unsigned_cell*);
-list_pair_unsigned* list_pair_unsigneds_concat(list_pair_unsigned*, list_pair_unsigned*);
-void list_pair_unsigned_clear(list_pair_unsigned*);
-void show_list_pair_unsigned(list_pair_unsigned*);
-
-
-/********** for unsigned ***********/
 bool list_unsigned_member(list_unsigned* L, unsigned u) {
   list_unsigned_cell* x;
   for (x = L->head; NULL != x; x = x->next) {
@@ -159,22 +126,49 @@ void list_unsigned_clear(list_unsigned* L) {
   }
 }
 
-void show_list_unsigned(list_unsigned* L) {
+void list_unsigned_print(list_unsigned* L) {
   list_unsigned_cell* p;
   for (p = L->head; NULL != p; p = p->next) { printf("%u, ", p->key); }
 }
 
 
+/************************* list pair unsigned *************************/
+struct LIST_PAIR_UNSIGNED_CELL {
+  /* unsigned first; */
+  /* unsigned second; */
+  pair_unsigned pu;
+  struct LIST_PAIR_UNSIGNED_CELL* prev;
+  struct LIST_PAIR_UNSIGNED_CELL* next;
+};
+typedef struct LIST_PAIR_UNSIGNED_CELL list_pair_unsigned_cell;
 
+struct LIST_PAIR_UNSIGNED {
+  list_pair_unsigned_cell* head;
+  list_pair_unsigned_cell* last;
+  unsigned size;
+};
+typedef struct LIST_PAIR_UNSIGNED list_pair_unsigned;
 
-/********** for unsigned pair ***********/
+void list_pair_unsigned_remove_head(list_pair_unsigned*);
+pair_unsigned list_pair_unsigned_head(list_pair_unsigned*);
+bool list_pair_unsigned_is_empty(list_pair_unsigned* L);
+list_pair_unsigned_cell* list_pair_unsigned_search(list_pair_unsigned*, unsigned, unsigned);
+void list_pair_unsigned_insert2(list_pair_unsigned*, pair_unsigned);
+void list_pair_unsigned_insert(list_pair_unsigned*, unsigned, unsigned);
+void list_pair_unsigned_insert_sub(list_pair_unsigned*, list_pair_unsigned_cell*);
+void list_pair_unsigned_delete(list_pair_unsigned*, unsigned, unsigned);
+void list_pair_unsigned_delete_sub(list_pair_unsigned*, list_pair_unsigned_cell*);
+list_pair_unsigned* list_pair_unsigneds_concat(list_pair_unsigned*, list_pair_unsigned*);
+void list_pair_unsigned_clear(list_pair_unsigned*);
+void list_pair_unsigned_print(list_pair_unsigned*);
+
 void list_pair_unsigned_remove_head(list_pair_unsigned* L) {
   list_pair_unsigned_delete_sub(L, L->head);
 }
 
 pair_unsigned list_pair_unsigned_head(list_pair_unsigned* L) {
   list_pair_unsigned_cell* h = L->head;
-  pair_unsigned p = { h->first, h->second };
+  pair_unsigned p = { h->pu.first, h->pu.second };
 
   return p;
 }
@@ -183,15 +177,23 @@ bool list_pair_unsigned_is_empty(list_pair_unsigned* L) { return (L->size == 0);
 
 list_pair_unsigned_cell* list_pair_unsigned_search(list_pair_unsigned* L, unsigned f, unsigned s) {
   list_pair_unsigned_cell* x = L->head;
-  while (NULL != x && x->first != f && x->second != s) { x = x->next; }
+  while (NULL != x && x->pu.first != f && x->pu.second != s) { x = x->next; }
   return x;
+}
+
+void list_pair_unsigned_insert2(list_pair_unsigned* L, pair_unsigned p) {
+  list_pair_unsigned_cell* new = (list_pair_unsigned_cell*)malloc(sizeof(list_pair_unsigned_cell));
+  L->size = L->size + 1;
+  new->pu.first = p.first;
+  new->pu.second = p.second;
+  list_pair_unsigned_insert_sub(L,new);
 }
 
 void list_pair_unsigned_insert(list_pair_unsigned* L, unsigned f, unsigned s) {
   list_pair_unsigned_cell* new = (list_pair_unsigned_cell*)malloc(sizeof(list_pair_unsigned_cell));
   L->size = L->size + 1;
-  new->first = f;
-  new->second = s;
+  new->pu.first = f;
+  new->pu.second = s;
   list_pair_unsigned_insert_sub(L,new);
 }
 
@@ -233,9 +235,9 @@ void list_pair_unsigned_clear(list_pair_unsigned* L) {
   }
 }
 
-void show_list_pair_unsigned(list_pair_unsigned* L) {
+void list_pair_unsigned_print(list_pair_unsigned* L) {
   list_pair_unsigned_cell* p;
-  for (p = L->head; NULL != p; p = p->next) { printf("(%u, %u)\n", p->first, p->second); }
+  for (p = L->head; NULL != p; p = p->next) { printf("(%u, %u)\n", p->pu.first, p->pu.second); }
 }
 
 #endif
