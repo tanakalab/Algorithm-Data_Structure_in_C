@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /************************* list unsigned *************************/
 struct LIST_UNSIGNED_CELL {
@@ -243,6 +244,112 @@ void list_pair_unsigned_print(list_pair_unsigned* L) {
   if (NULL != p) {
     printf("(%u, %u)", p->pu.first, p->pu.second);
     for (p = p->next; NULL != p; p = p->next) { printf(", (%u, %u)", p->pu.first, p->pu.second); }
+  }
+}
+
+
+/************************* list string *************************/
+struct LIST_STRING_CELL {
+  char* key;
+  struct LIST_STRING_CELL* prev;
+  struct LIST_STRING_CELL* next;
+};
+typedef struct LIST_STRING_CELL list_string_cell;
+
+struct LIST_STRING {
+  list_string_cell* head;
+  list_string_cell* last;
+  unsigned size;
+};
+typedef struct LIST_STRING list_string;
+
+void list_string_remove_head(list_string*);
+char* list_string_head(list_string*);
+bool list_string_is_empty(list_string* L);
+list_string_cell* list_string_search(list_string*, char*);
+void list_string_insert(list_string*, char*);
+void list_string_insert_sub(list_string*, list_string_cell*);
+void list_string_delete(list_string*, char*);
+void list_string_delete_sub(list_string*, list_string_cell*);
+list_string* list_strings_concat(list_string*, list_string*);
+void list_string_clear(list_string*);
+void list_string_print(list_string*);
+
+void list_string_remove_head(list_string* L) {
+  list_string_delete_sub(L, L->head);
+}
+
+char* list_string_head(list_string* L) {
+  list_string_cell* h = L->head;
+  unsigned l = strlen(h->key);
+  char* p = (char*)calloc(l+1, sizeof(char));
+  strcpy(p, h->key);
+
+  return p;
+}
+
+bool list_string_is_empty(list_string* L) { return (L->size == 0); }
+
+list_string_cell* list_string_search(list_string* L, char* s) {
+  list_string_cell* x = L->head;
+  while (NULL != x && strcmp(x->key, s)) { x = x->next; }
+  return x;
+}
+
+void list_string_insert(list_string* L, char* s) {
+  list_string_cell* new = (list_string_cell*)malloc(sizeof(list_string_cell));
+  L->size = L->size + 1;
+  unsigned l = strlen(s);
+  new->key = (char*)calloc(l+1, sizeof(char));
+  strcpy(new->key, s);
+  list_string_insert_sub(L,new);
+}
+
+void list_string_insert_sub(list_string* L, list_string_cell* x) {
+  x->next = L->head;
+  if (NULL != L->head) { L->head->prev = x; }
+  else { L->last = x; }
+  L->head = x;
+  x->prev = NULL;
+}
+
+void list_string_delete(list_string* L, char* s) {
+  list_string_cell* x = list_string_search(L, s);
+  if (NULL != x) { list_string_delete_sub(L, x); }
+}
+
+void list_string_delete_sub(list_string* L, list_string_cell* x) {
+  L->size = L->size - 1;
+  if (NULL != x->prev) { x->prev->next = x->next; }
+  else { L->head = x->next; }
+  if (NULL != x->next) { x->next->prev = x->prev; }
+  else { L->last = x->prev; }
+}
+
+list_string* list_strings_concat(list_string* L1, list_string* L2) {
+  if (NULL == L1) { return L2; }
+  L1->last->next = L2->head;
+  if (NULL != L2) { L2->head->prev = L1->last; }
+  L1->size = L1->size + L2->size;
+  return L1;
+}
+
+void list_string_clear(list_string* L) {
+  if (NULL == L) { return ; }
+  list_string_cell* p, *q;
+  for (p = L->head; NULL != p; ) {
+    q = p;
+    p = p->next;
+    free(q->key);
+    free(q);
+  }
+}
+
+void list_string_print(list_string* L) {
+  list_string_cell* p = L->head;
+  if (NULL != p) {
+    printf("%s", p->key);
+    for (p = p->next; NULL != p; p = p->next) { printf(", %s", p->key); }
   }
 }
 
