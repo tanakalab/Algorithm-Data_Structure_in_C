@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "list.h"
 #include "set.h"
-/* #include "tools.h" */
+#include "tools.h"
 
 
 int main(void) {
@@ -55,6 +55,13 @@ int main(void) {
 
   set_unsigned_clear(S);
   free(S);
+
+  /**************** range_to_01m_strings ****************/
+  list_string* COND = range_to_01m_strings(3, 17, LOW, HIGH);
+  printf("[3,17] -> "); list_string_print(COND); putchar('\n');
+
+  list_string_clear(COND);
+  free(COND);
 
   return 0;
 }

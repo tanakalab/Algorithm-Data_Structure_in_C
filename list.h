@@ -271,7 +271,7 @@ void list_string_insert(list_string*, char*);
 void list_string_insert_sub(list_string*, list_string_cell*);
 void list_string_delete(list_string*, char*);
 void list_string_delete_sub(list_string*, list_string_cell*);
-list_string* list_strings_concat(list_string*, list_string*);
+void list_strings_concat(list_string*, list_string*);
 void list_string_clear(list_string*);
 void list_string_print(list_string*);
 
@@ -326,12 +326,11 @@ void list_string_delete_sub(list_string* L, list_string_cell* x) {
   else { L->last = x->prev; }
 }
 
-list_string* list_strings_concat(list_string* L1, list_string* L2) {
-  if (NULL == L1) { return L2; }
+void list_strings_concat(list_string* L1, list_string* L2) {
+  if (NULL == L1 || NULL == L1->head) { L1 = L2; return ; }
   L1->last->next = L2->head;
-  if (NULL != L2) { L2->head->prev = L1->last; }
+  if (NULL != L2 && NULL != L2->head) { L2->head->prev = L1->last; }
   L1->size = L1->size + L2->size;
-  return L1;
 }
 
 void list_string_clear(list_string* L) {
