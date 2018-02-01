@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef __TANAKALAB_CONST_H__
-#include "const.h"
+#ifndef __TANAKALAB_BOOL_H__
+#include "bool.h"
 #endif
 
 typedef enum { red, black } color;
@@ -40,11 +40,11 @@ unsigned_node* tree_minimum_unsigned(unsigned_node*, unsigned_node*);
 unsigned_node* tree_maximum_unsigned(unsigned_node*, unsigned_node*);
 void left_lotate_unsigned(set_unsigned*, unsigned_node*);
 void right_lotate_unsigned(set_unsigned*, unsigned_node*);
-void set_insert_unsigned(set_unsigned*, unsigned);
-void set_insert_unsigned_sub(set_unsigned*, unsigned_node*);
+void set_unsigned_insert(set_unsigned*, unsigned);
+void set_unsigned_insert_sub(set_unsigned*, unsigned_node*);
 void set_instert_fixup_unsigned(set_unsigned*, unsigned_node*);
 void set_transplant_unsigned(set_unsigned*, unsigned_node*, unsigned_node*);
-void set_delete_unsigned(set_unsigned*, unsigned);
+void set_unsigned_delete(set_unsigned*, unsigned);
 void set_delete_unsigned_sub(set_unsigned*, unsigned_node*);
 void set_delete_fixup_unsigned(set_unsigned*, unsigned_node*);
 bool set_unsigned_is_empty(set_unsigned*);
@@ -56,9 +56,9 @@ void set_unsigned_diff_sub(set_unsigned*, unsigned_node*, unsigned_node*);
 void set_unsigned_diff(set_unsigned*, set_unsigned*);
 void set_unsigned_copy(set_unsigned*, set_unsigned*);
 void set_unsigned_copy_sub(set_unsigned*, unsigned_node*, unsigned_node*);
-void set_show_unsigned_debug(unsigned_node*, unsigned_node*, unsigned);
-void set_show_unsigned(set_unsigned*);
-void set_show_unsigned_sub(unsigned_node*, unsigned_node*, bool*);
+void set_unsigned_debug_print(unsigned_node*, unsigned_node*, unsigned);
+void set_unsigned_print(set_unsigned*);
+void set_unsigned_print_sub(unsigned_node*, unsigned_node*, bool*);
 void set_unsigned_clear(set_unsigned*);
 void set_unsigned_clear_sub(unsigned_node*, unsigned_node*);
 
@@ -143,16 +143,16 @@ void right_lotate_unsigned(set_unsigned* T, unsigned_node* y) {
   y->p = x;
 }
 
-void set_insert_unsigned(set_unsigned* T, unsigned v) {
+void set_unsigned_insert(set_unsigned* T, unsigned v) {
   if (T->nil != tree_search_unsigned(T->nil,T->root,v)) { return; }
   unsigned_node* z = (unsigned_node*)calloc(1,sizeof(unsigned_node));
   ++(T->size);
   z->key = v;
   z->left = z->right = z->p = T->nil;
-  set_insert_unsigned_sub(T, z);
+  set_unsigned_insert_sub(T, z);
 }
 
-void set_insert_unsigned_sub(set_unsigned* T, unsigned_node* z) {
+void set_unsigned_insert_sub(set_unsigned* T, unsigned_node* z) {
   unsigned_node* y = T->nil;
   unsigned_node* x = T->root;
   while (T->nil != x) {
@@ -224,7 +224,7 @@ void set_transplant_unsigned(set_unsigned* T, unsigned_node* u, unsigned_node* v
   v->p = u->p;
 }
 
-void set_delete_unsigned(set_unsigned* T, unsigned v) {
+void set_unsigned_delete(set_unsigned* T, unsigned v) {
   /* unsigned_node* z = (unsigned_node*)calloc(1,sizeof(unsigned_node)); */
   unsigned_node* z = tree_search_unsigned(T->nil,T->root,v);
   if (T->nil == z) { return; }
@@ -331,7 +331,7 @@ void set_unsigned_diff_sub(set_unsigned* S, unsigned_node* p, unsigned_node* nil
   if (nil == p || NULL == p) { return; }
   set_unsigned_diff_sub(S, p->left, nil);
   set_unsigned_diff_sub(S, p->right, nil);
-  set_delete_unsigned(S, p->key);
+  set_unsigned_delete(S, p->key);
 }
 
 /* S := S ∪ T */
@@ -341,7 +341,7 @@ void set_unsigned_union_sub(set_unsigned* S, unsigned_node* p, unsigned_node* ni
   if (nil == p || NULL == p) { return; }
   set_unsigned_union_sub(S, p->left, nil);
   set_unsigned_union_sub(S, p->right, nil);
-  set_insert_unsigned(S, p->key);
+  set_unsigned_insert(S, p->key);
 }
 
 /* R = S ∩ T */
@@ -357,7 +357,7 @@ void set_unsigned_intersect_sub(set_unsigned* S, set_unsigned* R, unsigned_node*
   if (nil == p || NULL == p) { return; }
   set_unsigned_intersect_sub(S, R, p->left, nil);
   set_unsigned_intersect_sub(S, R, p->right, nil);
-  if (set_unsigned_member(S, p->key)) { set_insert_unsigned(R, p->key); }
+  if (set_unsigned_member(S, p->key)) { set_unsigned_insert(R, p->key); }
 }
 
 /* S := T */
@@ -370,26 +370,26 @@ void set_unsigned_copy_sub(set_unsigned* S, unsigned_node* p, unsigned_node* nil
   if (nil == p || NULL == p) { return; }
   set_unsigned_copy_sub(S, p->left, nil);
   set_unsigned_copy_sub(S, p->right, nil);
-  set_insert_unsigned(S, p->key);
+  set_unsigned_insert(S, p->key);
 }
 
-void set_show_unsigned_debug(unsigned_node* p, unsigned_node* nil, unsigned i) { /* post order */
+void set_unsigned_debug_print(unsigned_node* p, unsigned_node* nil, unsigned i) { /* post order */
   if (nil == p || NULL == p) { return; }
-  set_show_unsigned_debug(p->left, nil, i+1);
-  set_show_unsigned_debug(p->right, nil, i+1);
+  set_unsigned_debug_print(p->left, nil, i+1);
+  set_unsigned_debug_print(p->right, nil, i+1);
   printf("depth = %d: key = %d -- %d\n", i, p->key, p->color);
 }
 
-void set_show_unsigned(set_unsigned* S) { /* post order */
+void set_unsigned_print(set_unsigned* S) { /* post order */
   if (NULL == S || S->nil == S->root) { return; }
   bool flag = false;
-  set_show_unsigned_sub(S->root, S->nil, &flag);
+  set_unsigned_print_sub(S->root, S->nil, &flag);
 }
 
-void set_show_unsigned_sub(unsigned_node* p, unsigned_node* nil, bool* flag) { /* post order */
+void set_unsigned_print_sub(unsigned_node* p, unsigned_node* nil, bool* flag) { /* post order */
   if (nil == p || NULL == p) { return; }
-  set_show_unsigned_sub(p->left, nil, flag);
-  set_show_unsigned_sub(p->right, nil, flag);
+  set_unsigned_print_sub(p->left, nil, flag);
+  set_unsigned_print_sub(p->right, nil, flag);
   if (!(*flag)) { printf("%d", p->key); *flag = true; }
   else printf(", %d", p->key);
 }
@@ -434,11 +434,11 @@ string_node* tree_minimum_string(string_node*, string_node*);
 string_node* tree_maximum_string(string_node*, string_node*);
 void left_lotate_string(set_string*, string_node*);
 void right_lotate_string(set_string*, string_node*);
-void set_insert_string(set_string*, char*);
-void set_insert_string_sub(set_string*, string_node*);
+void set_string_insert(set_string*, char*);
+void set_string_insert_sub(set_string*, string_node*);
 void set_instert_fixup_string(set_string*, string_node*);
 void set_transplant_string(set_string*, string_node*, string_node*);
-void set_delete_string(set_string*, char*);
+void set_string_delete(set_string*, char*);
 void set_delete_string_sub(set_string*, string_node*);
 void set_delete_fixup_string(set_string*, string_node*);
 bool set_string_is_empty(set_string*);
@@ -524,17 +524,17 @@ void right_lotate_string(set_string* T, string_node* y) {
   y->p = x;
 }
 
-void set_insert_string(set_string* T, char* v) {
+void set_string_insert(set_string* T, char* v) {
   if (T->nil != tree_search_string(T->nil,T->root,v)) { return; }
   string_node* z = (string_node*)calloc(1,sizeof(string_node));
   const unsigned l = strlen(v) + 1;
   z->key = (char*)calloc(l, sizeof(char));
   strcpy(z->key,v);
   z->left = z->right = z->p = T->nil;
-  set_insert_string_sub(T, z);
+  set_string_insert_sub(T, z);
 }
 
-void set_insert_string_sub(set_string* T, string_node* z) {
+void set_string_insert_sub(set_string* T, string_node* z) {
   string_node* y = T->nil;
   string_node* x = T->root;
   while (T->nil != x) {
@@ -606,7 +606,7 @@ void set_transplant_string(set_string* T, string_node* u, string_node* v) {
   v->p = u->p;
 }
 
-void set_delete_string(set_string* T, char* v) {
+void set_string_delete(set_string* T, char* v) {
   /* string_node* z = (string_node*)calloc(1,sizeof(string_node)); */
   string_node* z = tree_search_string(T->nil,T->root,v);
   if (T->nil == z) { return; }
@@ -709,7 +709,7 @@ void set_string_diff_sub(set_string* S, string_node* p, string_node* nil) {
   if (nil == p || NULL == p) { return; }
   set_string_diff_sub(S, p->left, nil);
   set_string_diff_sub(S, p->right, nil);
-  set_delete_string(S, p->key);
+  set_string_delete(S, p->key);
 }
 
 /* S := S ∪ T */
@@ -719,7 +719,7 @@ void set_string_union_sub(set_string* S, string_node* p, string_node* nil) {
   if (nil == p || NULL == p) { return; }
   set_string_union_sub(S, p->left, nil);
   set_string_union_sub(S, p->right, nil);
-  set_insert_string(S, p->key);
+  set_string_insert(S, p->key);
 }
 
 /* R = S ∩ T */
@@ -735,7 +735,7 @@ void set_string_intersect_sub(set_string* S, set_string* R, string_node* p, stri
   if (nil == p || NULL == p) { return; }
   set_string_intersect_sub(S, R, p->left, nil);
   set_string_intersect_sub(S, R, p->right, nil);
-  if (set_string_member(S, p->key)) { set_insert_string(R, p->key); }
+  if (set_string_member(S, p->key)) { set_string_insert(R, p->key); }
 }
 
 /* S := T */
@@ -745,7 +745,7 @@ void set_string_copy_sub(set_string* S, string_node* p, string_node* nil) {
   if (nil == p || NULL == p) { return; }
   set_string_copy_sub(S, p->left, nil);
   set_string_copy_sub(S, p->right, nil);
-  set_insert_string(S, p->key);
+  set_string_insert(S, p->key);
 }
 
 void set_show_string_debug(string_node* p, string_node* nil, unsigned i) { /* post order */

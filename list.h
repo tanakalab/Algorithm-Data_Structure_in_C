@@ -127,8 +127,11 @@ void list_unsigned_clear(list_unsigned* L) {
 }
 
 void list_unsigned_print(list_unsigned* L) {
-  list_unsigned_cell* p;
-  for (p = L->head; NULL != p; p = p->next) { printf("%u, ", p->key); }
+  list_unsigned_cell* p = L->head;
+  if (NULL != p) { 
+    printf("%u", p->key); 
+    for (p = p->next; NULL != p; p = p->next) { printf(", %u", p->key); } 
+  }
 }
 
 
@@ -177,7 +180,7 @@ bool list_pair_unsigned_is_empty(list_pair_unsigned* L) { return (L->size == 0);
 
 list_pair_unsigned_cell* list_pair_unsigned_search(list_pair_unsigned* L, unsigned f, unsigned s) {
   list_pair_unsigned_cell* x = L->head;
-  while (NULL != x && x->pu.first != f && x->pu.second != s) { x = x->next; }
+  while (NULL != x && (x->pu.first != f || x->pu.second != s)) { x = x->next; }
   return x;
 }
 
@@ -236,8 +239,11 @@ void list_pair_unsigned_clear(list_pair_unsigned* L) {
 }
 
 void list_pair_unsigned_print(list_pair_unsigned* L) {
-  list_pair_unsigned_cell* p;
-  for (p = L->head; NULL != p; p = p->next) { printf("(%u, %u)\n", p->pu.first, p->pu.second); }
+  list_pair_unsigned_cell* p = L->head;
+  if (NULL != p) {
+    printf("(%u, %u)", p->pu.first, p->pu.second);
+    for (p = p->next; NULL != p; p = p->next) { printf(", (%u, %u)", p->pu.first, p->pu.second); }
+  }
 }
 
 #endif
