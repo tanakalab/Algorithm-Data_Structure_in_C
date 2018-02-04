@@ -34,7 +34,7 @@ typedef struct GRAPH graph;
 void print_graph(graph G) {
   const unsigned d = floor(log10(G.size)) + 1;
   unsigned i;
-  for (i = 0; i < G.size; ++i) { printf("al[%*d] : ", d, i); show_list_unsigned(G.al[i]); putchar('\n'); }
+  for (i = 0; i < G.size; ++i) { printf("al[%*d] : ", d, i); list_unsigned_print(G.al[i]); putchar('\n'); }
 }
 
 unsigned* get_inverse(const unsigned* s, const unsigned n) {
@@ -123,7 +123,7 @@ set_unsigned** c1p_matrix_to_clique(matrix* M) {
   for (j = 0; j < M->n; ++j) {
     clique[j] = (set_unsigned*)calloc(1, sizeof(set_unsigned));
     set_unsigned_init(clique[j]);
-    for (i = 0; i < M->m; ++i) { if ('1' == M->b[i][j]) { set_insert_unsigned(clique[j], i); } }
+    for (i = 0; i < M->m; ++i) { if ('1' == M->b[i][j]) { set_unsigned_insert(clique[j], i); } }
   }
   return clique;
 }
